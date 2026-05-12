@@ -1,37 +1,20 @@
 package br.com.zenon.fraud;
 
-import br.com.zenon.fraud.model.DestinyClient;
-import br.com.zenon.fraud.model.OriginClient;
 import br.com.zenon.fraud.model.Transaction;
+import br.com.zenon.fraud.services.TransactionIngestor;
 
-import java.math.BigDecimal;
-
-import static br.com.zenon.fraud.model.Payment.*;
+import java.io.IOException;
+import java.util.List;
 
 
 public class Main {
-    static void main(String[] args) {
-        BigDecimal BigDecimal;
-        Transaction transaction1 = new Transaction(
-                1,
-                PAYMENT,
-                new BigDecimal("9839.64"),
-                new OriginClient("C1231006815", new BigDecimal("170136.0"), new BigDecimal("160296.36")),
-                new DestinyClient("M1979787155", new BigDecimal("0.0"), new BigDecimal("0.0")),
-                0,
-                0
-                );
+    static void main(String[] args) throws IOException {
 
-        Transaction transaction2 = new Transaction(
-                743,
-                CASH_OUT,
-                new BigDecimal("850002.52"),
-                new OriginClient("C1280323807", new BigDecimal("850002.52"), new BigDecimal("0")),
-                new DestinyClient("C873221189", new BigDecimal("6510099.11"), new BigDecimal("7360101.63")),
-                1,
-                0
-        );
-        System.out.println( transaction1);
-        System.out.println(transaction2);
+        String transactionsFile = "data/PS_20174392719_1491204439457_log.csv";
+        TransactionIngestor transactionIngestor = new TransactionIngestor(transactionsFile);
+        transactionIngestor.loadTransactions(1000);
+        List<Transaction> transactionsTest = transactionIngestor.getTransactions();
+        transactionsTest.forEach(System.out::println);
+
     }
 }
