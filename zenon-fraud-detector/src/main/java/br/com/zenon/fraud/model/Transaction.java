@@ -11,7 +11,6 @@ public record Transaction (
         boolean isFraud,
         boolean isFlaggedFraud) {
 
-    public Transaction{}
     public Transaction(int step, Payment type, BigDecimal amount, TransactionCustomer origin, TransactionCustomer recipient, int isFraud, int isFlaggedFraud) {
         this(
                 validateStep(step),

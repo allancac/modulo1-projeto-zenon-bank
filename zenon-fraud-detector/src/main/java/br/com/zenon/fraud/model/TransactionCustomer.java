@@ -8,7 +8,7 @@ public record TransactionCustomer(
         BigDecimal newBalance){
 
     public TransactionCustomer(String name, BigDecimal oldBalance, BigDecimal newBalance) {
-        if(name != null || !name.isBlank())
+        if((name != null) || !name.isBlank())
             this.name = name;
         else
             throw new IllegalArgumentException("name should not be null or blank: " + name);
