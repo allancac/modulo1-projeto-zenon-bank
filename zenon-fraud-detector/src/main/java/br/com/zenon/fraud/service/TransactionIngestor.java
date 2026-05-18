@@ -38,7 +38,7 @@ public class TransactionIngestor {
         try (FileReader fileReader = new FileReader(transactionsFile)) {
             BufferedReader bufferedReader = new BufferedReader(fileReader);
 
-            String header = bufferedReader.readLine();
+            bufferedReader.readLine();
             String line = bufferedReader.readLine();
             int totalErrors = 0;
 
@@ -67,12 +67,12 @@ public class TransactionIngestor {
         try (FileReader fileReader = new FileReader(transactionsFile)) {
             BufferedReader bufferedReader = new BufferedReader(fileReader);
 
-            String header = bufferedReader.readLine();
+            bufferedReader.readLine();
             String line = bufferedReader.readLine();
             int totalErrors = 0;
 
             while (line != null) {
-                Transaction transaction = null;
+                Transaction transaction ;
                 try {
                     transaction = mapTransaction(line);
                     transactions.add(transaction);
@@ -97,9 +97,9 @@ public class TransactionIngestor {
      */
     private Transaction mapTransaction(String line) throws IllegalArgumentException{
         String[] fields = line.split(",");
-        TransactionCustomer origin = null;
-        TransactionCustomer recipient = null;
-        Transaction transaction = null;
+        TransactionCustomer origin ;
+        TransactionCustomer recipient ;
+        Transaction transaction ;
         try {
             origin = new TransactionCustomer(fields[3], new BigDecimal(fields[4]), new BigDecimal(fields[5]));
             recipient = new TransactionCustomer(fields[6], new BigDecimal(fields[7]), new BigDecimal(fields[8]));
