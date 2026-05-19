@@ -44,34 +44,6 @@ public class TransactionIngestor {
 
             int count = 0;
             while (line != null && count++ < total) {
-                Transaction transaction = null;
-                try {
-                    transaction = mapTransaction(line);
-                    transactions.add(transaction);
-                }catch (IllegalArgumentException e){
-                    System.err.printf("Erro: %s | %s: %s\n", line, e.getClass().getCanonicalName(), e.getMessage());
-                    totalErrors++;
-                }finally {
-                    line = bufferedReader.readLine();
-                }
-            }
-            System.out.println("totalErrors = " + totalErrors);
-            bufferedReader.close();
-        }
-
-    }
-
-    public void loadTransactions() throws IOException {
-
-
-        try (FileReader fileReader = new FileReader(transactionsFile)) {
-            BufferedReader bufferedReader = new BufferedReader(fileReader);
-
-            bufferedReader.readLine();
-            String line = bufferedReader.readLine();
-            int totalErrors = 0;
-
-            while (line != null) {
                 Transaction transaction ;
                 try {
                     transaction = mapTransaction(line);
@@ -89,6 +61,9 @@ public class TransactionIngestor {
 
     }
 
+    public void loadTransactions() throws IOException {
+        loadTransactions(Integer.MAX_VALUE);
+    }
 
     /***
      * Maps a String line to a transaction
