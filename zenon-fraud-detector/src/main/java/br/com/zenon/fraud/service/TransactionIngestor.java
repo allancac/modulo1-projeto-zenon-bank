@@ -9,7 +9,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 public class TransactionIngestor {
 
@@ -46,7 +48,10 @@ public class TransactionIngestor {
             while (line != null && count++ < total) {
                 Transaction transaction ;
                 try {
-                    transaction = mapTransaction(line);
+                    final int numeroLinha = count;
+                    transaction = mapTransaction(line).orElseThrow(
+                            ()-> new IllegalArgumentException("Linha " + numeroLinha + " em branco")
+                    );
                     transactions.add(transaction);
                 }catch (IllegalArgumentException e){
                     System.err.printf("Erro: %s | %s: %s\n", line, e.getClass().getCanonicalName(), e.getMessage());
@@ -70,27 +75,32 @@ public class TransactionIngestor {
      * @param line String line that represents a transaction
      * @return Returns a transaction object
      */
-    private Transaction mapTransaction(String line) throws IllegalArgumentException{
-        String[] fields = line.split(",");
+    private Optional<Transaction> mapTransaction(String line) throws IllegalArgumentException {
+
+        List<String> fields = Arrays.stream(line.split(",")).toList();
+        boolean isEmptyLine = fields.stream().allMatch(String::isBlank);
+        if ( isEmptyLine) {
+            return Optional.empty();
+        }
         TransactionCustomer origin ;
         TransactionCustomer recipient ;
         Transaction transaction ;
         try {
-            origin = new TransactionCustomer(fields[3], new BigDecimal(fields[4]), new BigDecimal(fields[5]));
-            recipient = new TransactionCustomer(fields[6], new BigDecimal(fields[7]), new BigDecimal(fields[8]));
+            origin = new TransactionCustomer(fields.get(3), new BigDecimal(fields.get(4)), new BigDecimal(fields.get(5)));
+            recipient = new TransactionCustomer(fields.get(6), new BigDecimal(fields.get(7)), new BigDecimal(fields.get(8)));
             transaction = new Transaction(
-                    Integer.parseInt(fields[0]),
-                    Payment.valueOf(fields[1]),
-                    new BigDecimal(fields[2]),
+                    Integer.parseInt(fields.get(0)),
+                    Payment.valueOf(fields.get(1)),
+                    new BigDecimal(fields.get(2)),
                     origin,
                     recipient,
-                    Integer.parseInt(fields[9]),
-                    Integer.parseInt(fields[10])
+                    Integer.parseInt(fields.get(9)),
+                    Integer.parseInt(fields.get(10))
             );
         } catch (IllegalArgumentException e) {
            throw new IllegalArgumentException(e.getMessage());
         }
-        return transaction;
+        return Optional.of(transaction);
 
     }
 
